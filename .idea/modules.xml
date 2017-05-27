@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/dbunit001/dbunit001.iml" filepath="$PROJECT_DIR$/dbunit001/dbunit001.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dbunit002/dbunit002.iml" filepath="$PROJECT_DIR$/dbunit002/dbunit002.iml" />
       <module fileurl="file://$PROJECT_DIR$/java_test.iml" filepath="$PROJECT_DIR$/java_test.iml" />
     </modules>
   </component>

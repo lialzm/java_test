@@ -7,10 +7,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="dbunit001" />
+        <module name="dbunit002" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="dbunit001" target="1.6" />
+      <module name="dbunit002" target="1.5" />
       <module name="java_test" target="1.5" />
     </bytecodeTargetLevel>
   </component>
