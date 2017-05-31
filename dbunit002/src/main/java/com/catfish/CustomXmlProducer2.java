@@ -17,32 +17,34 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lcy on 17/5/26.
  */
-public class CustomXmlProducer extends DefaultHandler implements
+public class CustomXmlProducer2 extends DefaultHandler implements
         IDataSetProducer, ContentHandler, ErrorHandler {
 
     /**
      * Logger for this class
      */
     private static final Logger logger = LoggerFactory
-            .getLogger(CustomXmlProducer.class);
+            .getLogger(CustomXmlProducer2.class);
 
     private static final IDataSetConsumer EMPTY_CONSUMER = new DefaultConsumer();
 
     private static final String DATASET = "dataset";
     private static final String TABLE = "table";
     private static final String NAME = "name";
-    private static final String COLUMN = "column";
     private static final String ROW = "row";
-    private static final String VALUE = "value";
+    private static final String COLUMN = "column";
+
     //    private static final String NULL = "null";
     //    private static final String NONE = "none";
 
-    private static final String COLUMN_ATTR_NAME = "name";
 
     private final InputSource _inputSource;
     private boolean _validating = false;
@@ -60,7 +62,7 @@ public class CustomXmlProducer extends DefaultHandler implements
     private String _activeColumnName;
     private List<String> __activeColumnNames;
 
-    public CustomXmlProducer(InputSource inputSource) {
+    public CustomXmlProducer2(InputSource inputSource) {
         _inputSource = inputSource;
     }
 
@@ -106,7 +108,7 @@ public class CustomXmlProducer extends DefaultHandler implements
         } catch (ParserConfigurationException e) {
             throw new DataSetException(e);
         } catch (SAXException e) {
-            DataSetException exceptionToRethrow = CustomXmlProducer
+            DataSetException exceptionToRethrow = CustomXmlProducer2
                     .buildException(e);
             throw exceptionToRethrow;
         } catch (IOException e) {
@@ -181,15 +183,13 @@ public class CustomXmlProducer extends DefaultHandler implements
                 return;
             }
 
-            // column
+            //添加字段
             if (qName.equals(COLUMN)) {
                 _activeCharacters = new StringBuffer();
                 return;
             }
-
             // row
             if (qName.equals(ROW)) {
-                // End of metadata at first row
                 if (_activeColumnNames != null) {
                     _activeMetaData = createMetaData(_activeTableName,
                             _activeColumnNames);
@@ -198,29 +198,14 @@ public class CustomXmlProducer extends DefaultHandler implements
                     __activeColumnNames = _activeColumnNames;
                     _activeColumnNames = null;
                 }
-
                 _activeRowValues = new HashMap<String, String>();
+
                 return;
             }
 
-            // value
-            if (qName.equals(VALUE)) {
-                _activeColumnName = attributes.getValue(COLUMN_ATTR_NAME);
-                _activeCharacters = new StringBuffer();
-                return;
-            }
+            _activeColumnName = qName;
+            _activeCharacters = new StringBuffer();
 
-            //            // null
-            //            if (qName.equals(NULL)) {
-            //                _activeRowValues.add(null);
-            //                return;
-            //            }
-            //
-            //            // none
-            //            if (qName.equals(NONE)) {
-            //                _activeRowValues.add(ITable.NO_VALUE);
-            //                return;
-            //            }
         } catch (DataSetException e) {
             throw new SAXException(e);
         }
@@ -242,22 +227,12 @@ public class CustomXmlProducer extends DefaultHandler implements
 
             // table
             if (qName.equals(TABLE)) {
-                __activeColumnNames = null;
-                // End of metadata
-                if (_activeColumnNames != null) {
-                    _activeMetaData = createMetaData(_activeTableName,
-                            _activeColumnNames);
-                    _consumer.startTable(_activeMetaData);
-                    _activeColumnNames = null;
-                }
-
                 _consumer.endTable();
                 _activeTableName = null;
                 _activeMetaData = null;
                 return;
             }
 
-            // column
             if (qName.equals(COLUMN)) {
                 _activeColumnNames.add(_activeCharacters.toString());
                 _activeCharacters = null;
@@ -268,10 +243,6 @@ public class CustomXmlProducer extends DefaultHandler implements
             if (qName.equals(ROW)) {
                 final int length = __activeColumnNames.size();
                 Object[] values = new Object[length];
-                //                for (int i = 0; i < values.length; i++) {
-                //                    values[i] = (i >= _activeRowValues.size()) ? ITable.NO_VALUE
-                //                            : _activeRowValues.get(i);
-                //                }
                 for (int i = 0; i < length; i++) {
                     values[i] = _activeRowValues.get(__activeColumnNames.get(i));
                 }
@@ -280,25 +251,9 @@ public class CustomXmlProducer extends DefaultHandler implements
                 return;
             }
 
-            // value
-            if (qName.equals(VALUE)) {
-                _activeRowValues.put(_activeColumnName, _activeCharacters.toString());
-                _activeColumnName = null;
-                _activeCharacters = null;
-                return;
-            }
+            _activeRowValues.put(_activeColumnName, _activeCharacters.toString());
 
-            //            // null
-            //            if (qName.equals(NULL)) {
-            //                // Nothing to do, already processed in startElement()
-            //                return;
-            //            }
-            //
-            //            // none
-            //            if (qName.equals(NONE)) {
-            //                // Nothing to do, already processed in startElement()
-            //                return;
-            //            }
+
         } catch (DataSetException e) {
             throw new SAXException(e);
         }

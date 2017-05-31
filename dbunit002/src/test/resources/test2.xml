@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <table name="employee">
+        <column>id</column>
+        <column>info</column>
+        <row>
+            <id>1</id>
+            <info><![CDATA[{1111}]]></info>
+        </row>
+        <row>
+            <id>2</id>
+            <info>1111</info>
+        </row>
+    </table>
+</dataset>
