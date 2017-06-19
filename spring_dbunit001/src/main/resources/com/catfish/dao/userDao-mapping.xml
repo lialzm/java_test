@@ -4,80 +4,12 @@
         "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
 <mapper namespace="com.catfish.dao.UserDao">
 
-    <!--返回map-->
-    <select id="queryMapByAge" resultType="map" parameterType="integer">
-        SELECT * from user WHERE age=#{age}
-    </select>
 
-    <!--返回集合-->
-    <select id="queryListByAge" resultType="com.catfish.entity.UserEntity">
-        SELECT * FROM  user WHERE age=#{age}
-    </select>
 
-    <!--基本的resultMap例子-->
-    <resultMap id="perPrimary" type="user">
-        <id property="id" column="id"/>
-        <result property="name" column="name"/>
-        <result property="age" column="age"/>
-    </resultMap>
-
-    <select id="queryByAge" resultMap="perPrimary">
+    <select id="queryByAge123" resultType="user">
         SELECT * from user where age=#{age}
     </select>
 
-    <resultMap id="test" type="com.catfish.entity.UserEntity">
-        <id property="id" column="userId"/>
-        <result property="name" column="name"/>
-    </resultMap>
-
-    <!--resultMap的继承-->
-    <resultMap id="test2" extends="test" type="com.catfish.entity.UserEntity">
-        <result property="userCard.cardNo" column="cardNo"/>
-        <result property="userCard.userId" column="userId"/>
-    </resultMap>
-
-    <!--一对一-->
-    <select id="queryByAge4" resultMap="test2">
-        SELECT u.id as userId,u.name,
-        c.card_no cardNo FROM  user u LEFT JOIN user_card c on u.id=c.user_id  WHERE u.age=#{age}
-    </select>
-
-
-    <resultMap id="userCardResult" type="com.catfish.entity.UserCard">
-        <id property="userId" column="user_id"/>
-        <result property="cardNo" column="card_no"/>
-    </resultMap>
-
-    <!--嵌套查询-->
-    <select id="queryCardByUserId" resultMap="userCardResult">
-        SELECT * from user_card u WHERE u.user_id=#{userId}
-    </select>
-
-    <resultMap id="usermap" type="com.catfish.entity.UserEntity">
-        <id property="id" column="user_id"/>
-        <result property="name" column="name"/>
-        <result property="age" column="age"/>
-        <!--一对一-->
-        <association property="userCard" column="user_id" select="queryCardByUserId"/>
-    </resultMap>
-
-    <resultMap id="usermap2" type="com.catfish.entity.UserEntity">
-        <id property="id" column="user_id"/>
-        <result property="name" column="name"/>
-        <result property="age" column="age"/>
-        <!--一对一-->
-        <association property="userCard" resultMap="userCardResult"/>
-    </resultMap>
-
-    <select id="queryByAge3" resultMap="usermap">
-        SELECT u.id as user_id,u.name,
-        u.age FROM  user u  WHERE u.age=#{age}
-    </select>
-
-    <select id="queryByAge5" resultMap="usermap2">
-        SELECT u.id as user_id,u.name,
-        u.age,c.* FROM  user u LEFT  join user_card c on u.id=c.user_id WHERE u.age=#{age}
-    </select>
 
 
 </mapper>

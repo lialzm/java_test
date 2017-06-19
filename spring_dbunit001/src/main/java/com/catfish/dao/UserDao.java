@@ -10,16 +10,7 @@ import java.util.Map;
  */
 public interface UserDao {
 
-    UserEntity queryByAge(Integer age);
+    UserEntity queryByAge123(Integer age);
 
-    Map queryMapByAge(Integer age);
-
-    List<UserEntity> queryListByAge(Integer age);
-
-    UserEntity queryByAge3(Integer age);
-
-    UserEntity queryByAge4(Integer age);
-
-    UserEntity queryByAge5(Integer age);
 
 }
